@@ -9,13 +9,13 @@ ctx ━───── 10%
 7d  ────── 1% 4d16h
 ```
 
-Bars go yellow at 50% and red at 80%. Every Claude agent gets the Claude mark in place of herdr's state dot, colored by state: green idle, yellow working, teal done, red blocked.
+Bars go yellow at 50% and red at 80%. Every Claude agent gets the Claude mark in place of herdr's state dot; the mark and workspace name are colored by state: green idle, yellow working, teal done, red blocked.
 
 ## How it works
 
 There is no daemon and no polling. Claude Code already pipes context and rate-limit data to its statusline command as JSON. A one-line hook in your statusline script hands that JSON to `report.sh`, which caches the numbers. `sync.sh` then pushes three pane tokens (`herdr pane report-metadata`) to the focused Claude agent and clears them from every other pane. The sidebar renders them through `rows_by_agent.claude`.
 
-The Claude mark is `$cu_icon`: U+E1A0 from the bundled *Herdr Agent Icons Max* font plus an invisible state tag (U+2061 working, U+2060 done, U+2062 blocked) that the config colors with `rules`.
+The head row is one token, `$cu_head`: the Claude mark (U+E1A0 from the bundled *Herdr Agent Icons Max* font), the workspace name and an invisible state tag (U+2061 working, U+2060 done, U+2062 blocked) that the config colors with `rules`. It is a single token because herdr puts ` · ` after every custom token.
 
 `sync.sh` runs after every statusline update, on `pane.agent_status_changed` / `pane.agent_detected`, and on herdr's `pane.focused`, `tab.focused` and `workspace.focused` events, so the bars follow your focus. The 5h/7d limits are account-wide, so the latest values from any session are shown. Values refresh on activity in a session or when you switch to it.
 

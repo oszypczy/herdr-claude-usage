@@ -38,8 +38,8 @@ rows_block() {
   echo "$mark >>>"
   echo "[ui.sidebar.agents.rows_by_agent]"
   echo "claude = ["
-  # $cu_icon carries an invisible state tag: U+2061 working, U+2060 done, U+2062 blocked.
-  echo '  [{ token = "$cu_icon", fg = "#a6e3a1", rules = [{ contains = "\u2061", fg = "#f9e2af" }, { contains = "\u2060", fg = "#94e2d5" }, { contains = "\u2062", fg = "#f38ba8" }] }, "machine", "workspace", "tab"],'
+  # $cu_head is icon + workspace with an invisible state tag: U+2061 working, U+2060 done, U+2062 blocked.
+  echo '  [{ token = "$cu_head", fg = "#a6e3a1", bold = true, rules = [{ contains = "\u2061", fg = "#f9e2af" }, { contains = "\u2060", fg = "#94e2d5" }, { contains = "\u2062", fg = "#f38ba8" }] }, "tab"],'
   for n in ctx 5h 7d; do
     echo "  [{ token = \"\$cu_${n}_ok\", $ok }, { token = \"\$cu_${n}_warn\", $warn }, { token = \"\$cu_${n}_hot\", $hot }],"
   done

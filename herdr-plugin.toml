@@ -51,3 +51,14 @@ command = ["sh", "./sync.sh"]
 id = "agent-detected"
 on = "pane.agent_detected"
 command = ["sh", "./sync.sh"]
+
+# Keep the workspace name in the head token current.
+[[events]]
+id = "workspace-renamed"
+on = "workspace.renamed"
+command = ["sh", "./sync.sh"]
+
+[[events]]
+id = "pane-moved"
+on = "pane.moved"
+command = ["sh", "./sync.sh"]
