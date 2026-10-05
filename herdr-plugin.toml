@@ -2,7 +2,7 @@
 
 id = "claude-usage"
 name = "Claude Usage"
-version = "0.2.0"
+version = "0.3.0"
 min_herdr_version = "0.9.0"
 description = "Minimal context / 5h / 7d usage bars for Claude agents in the sidebar"
 platforms = ["linux", "macos"]
@@ -39,4 +39,15 @@ command = ["sh", "./sync.sh"]
 [[events]]
 id = "workspace-focused"
 on = "workspace.focused"
+command = ["sh", "./sync.sh"]
+
+# Recolor the Claude icon when an agent changes state.
+[[events]]
+id = "agent-status-changed"
+on = "pane.agent_status_changed"
+command = ["sh", "./sync.sh"]
+
+[[events]]
+id = "agent-detected"
+on = "pane.agent_detected"
 command = ["sh", "./sync.sh"]
