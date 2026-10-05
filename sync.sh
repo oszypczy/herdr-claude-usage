@@ -6,7 +6,7 @@
 
 root=$(cd "$(dirname "$0")" && pwd)
 . "$root/lib.sh"
-state="${HERDR_PLUGIN_CONFIG_DIR:-$HOME/.config/herdr/plugins/config/claude-usage}/state"
+state="${HERDR_PLUGIN_CONFIG_DIR:-$HOME/.config/herdr/plugins/config/$plugin_id}/state"
 plugins_json="$(dirname "${HERDR_SOCKET_PATH:-$HOME/.config/herdr/herdr.sock}")/plugins.json"
 
 # One sync at a time: focus events and statusline updates arrive in bursts, and an
@@ -34,7 +34,7 @@ printf '%s' "$list" | jq -r --argjson ws "$ws" '.result.panes[] | select(.agent 
   done
 
 focus=""
-enabled=$(jq -r '[.[] | select(.plugin_id == "claude-usage") | .enabled] | first // false' "$plugins_json" 2>/dev/null)
+enabled=$(jq -r --arg id "$plugin_id" '[.[] | select(.plugin_id == $id) | .enabled] | first // false' "$plugins_json" 2>/dev/null)
 if [ "$enabled" = true ]; then
   focus=$(printf '%s' "$list" | jq -r '[.result.panes[] | select(.focused and .agent == "claude") | .pane_id] | first // ""')
 fi

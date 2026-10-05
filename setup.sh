@@ -1,11 +1,11 @@
 #!/bin/sh
-# claude-usage plugin helper.
+# Claude Usage Mini plugin helper.
 #   setup.sh link     herdr startup: expose report.sh at a stable path in the plugin config dir
 #   setup.sh install  add sidebar rows to herdr config.toml + hook into the Claude statusline
 #   setup.sh remove   undo `install`
 set -e
 
-id=claude-usage
+id=oszypczy.claude-usage
 mark="# claude-usage"
 root="${HERDR_PLUGIN_ROOT:-$(cd "$(dirname "$0")" && pwd)}"
 cfg_dir="${HERDR_PLUGIN_CONFIG_DIR:-$(herdr plugin config-dir "$id" 2>/dev/null || echo "$HOME/.config/herdr/plugins/config/$id")}"
@@ -75,11 +75,10 @@ install() {
     echo "statusline: no statusline script found in ~/.claude/settings.json."
     echo "  Add this line to your statusline script, right after input=\$(cat):"
     echo "  $(hook_line)"
-  elif grep -qF "$mark" "$sl"; then
-    echo "statusline: already hooked ($sl)"
   elif grep -q '^input=\$(cat)' "$sl"; then
+    # Drop a previous hook first: its path depends on the plugin config dir.
     tmp=$(mktemp)
-    awk -v hook="$(hook_line)" '{ print } !done && /^input=\$\(cat\)/ { print hook; done = 1 }' "$sl" > "$tmp"
+    grep -vF "$mark" "$sl" | awk -v hook="$(hook_line)" '{ print } !done && /^input=\$\(cat\)/ { print hook; done = 1 }' > "$tmp"
     cat "$tmp" > "$sl" && rm -f "$tmp"
     echo "statusline: hooked into $sl"
   else

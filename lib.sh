@@ -1,6 +1,7 @@
 # Shared helpers, sourced by sync.sh.
 # Tokens: $cu_ctx_*, $cu_5h_*, $cu_7d_* where * is ok | warn | hot.
 
+plugin_id=oszypczy.claude-usage
 herdr="${HERDR_BIN_PATH:-$(command -v herdr || echo "$HOME/.local/bin/herdr")}"
 
 # bar <pct> -> "━━────"

@@ -23,7 +23,7 @@ export HERDR_PLUGIN_CONFIG_DIR="$tmp/cfg"
 mkdir -p "$tmp/cfg"
 ln -s "$repo/report.sh" "$tmp/cfg/report.sh"
 
-enable() { echo "[{\"plugin_id\":\"claude-usage\",\"enabled\":$1}]" > "$tmp/plugins.json"; }
+enable() { echo "[{\"plugin_id\":\"oszypczy.claude-usage\",\"enabled\":$1}]" > "$tmp/plugins.json"; }
 
 # panes: <focused pane id> ; claude w1:p1, codex w1:p2, shell w2:p1, claude w2:p2
 panes() {

@@ -1,15 +1,22 @@
-# herdr-claude-usage
+# Claude Usage Mini
 
-Minimal Claude usage bars for the [herdr](https://herdr.dev) agents sidebar: context window, 5-hour limit and 7-day limit, each with its reset countdown. Only the focused Claude agent shows them, so a long agent list stays compact.
+A simple, minimal Claude usage plugin for [herdr](https://herdr.dev). Three tiny bars in the agents sidebar: context window, 5-hour limit and 7-day limit, each with its reset countdown. Only the focused Claude agent shows them, so a long agent list stays compact.
 
 ```
-✳ VSCode · Herdr Claude usage…
+✳ my-project · Fix auth flow
+✳ landing · Hero section copy
 ctx ━───── 10%
 5h  ━━──── 38% 2h50m
 7d  ────── 1% 4d16h
 ```
 
+(The bars sit under the focused agent; the others keep a single line.)
+
 Bars go yellow at 50% and red at 80%. Every Claude agent gets the Claude mark in place of herdr's state dot; the mark and workspace name are colored by state: green idle, yellow working, teal done, red blocked.
+
+## Privacy
+
+Everything stays on your machine. The plugin never reads credentials, never calls an API and has no network code: it only reformats the JSON that Claude Code already passes to your statusline. Non-Claude agents (Codex, Pi, …) and plain shells are never touched.
 
 ## How it works
 
@@ -29,7 +36,7 @@ The head row is one token, `$cu_head`: the Claude mark (`✳`, U+2733, the same 
 
 ```sh
 herdr plugin install oszypczy/herdr-claude-usage   # or: herdr plugin link /path/to/herdr-claude-usage
-herdr plugin action invoke setup --plugin claude-usage
+herdr plugin action invoke setup --plugin oszypczy.claude-usage
 ```
 
 `setup` is idempotent. It:
@@ -41,8 +48,8 @@ If either step can't be done automatically (for example, you already have your o
 
 ## Disable / uninstall
 
-- `herdr plugin disable claude-usage` hides the bars. They come back with `enable`.
-- `herdr plugin action invoke remove --plugin claude-usage` removes the config block and the statusline line. Run it before `herdr plugin uninstall claude-usage`.
+- `herdr plugin disable oszypczy.claude-usage` hides the bars. They come back with `enable`.
+- `herdr plugin action invoke remove --plugin oszypczy.claude-usage` removes the config block and the statusline line. Run it before `herdr plugin uninstall oszypczy.claude-usage`.
 
 The statusline hook is guarded, so a leftover line is a no-op once the plugin is gone.
 
