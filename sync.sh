@@ -16,7 +16,7 @@ list=$("$herdr" pane list 2>/dev/null) || exit 0
 # ones are sent.
 ws=$("$herdr" workspace list 2>/dev/null | jq -c '[.result.workspaces[] | {key: .workspace_id, value: .label}] | from_entries') || ws='{}'
 printf '%s' "$list" | jq -r --argjson ws "$ws" '.result.panes[] | select(.agent == "claude")
-    | [.pane_id, ("\ue1a0" + ({working: "\u2061", done: "\u2060", blocked: "\u2062"}[.agent_status] // "")
+    | [.pane_id, ("\u2733" + ({working: "\u2061", done: "\u2060", blocked: "\u2062"}[.agent_status] // "")
         + " " + ($ws[.workspace_id] // .workspace_id))]
     as [$id, $want] | select($want != (.tokens.cu_head // "")) | "\($id)\t\($want)"' |
   while IFS='	' read -r p head; do

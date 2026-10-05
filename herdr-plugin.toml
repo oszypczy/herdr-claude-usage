@@ -2,7 +2,7 @@
 
 id = "claude-usage"
 name = "Claude Usage"
-version = "0.3.0"
+version = "0.4.0"
 min_herdr_version = "0.9.0"
 description = "Minimal context / 5h / 7d usage bars for Claude agents in the sidebar"
 platforms = ["linux", "macos"]

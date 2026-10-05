@@ -1,8 +1,7 @@
 #!/bin/sh
 # claude-usage plugin helper.
 #   setup.sh link     herdr startup: expose report.sh at a stable path in the plugin config dir
-#   setup.sh install  add sidebar rows to herdr config.toml, hook into the Claude statusline,
-#                     install the Claude icon font and map it in Ghostty / kitty
+#   setup.sh install  add sidebar rows to herdr config.toml + hook into the Claude statusline
 #   setup.sh remove   undo `install`
 set -e
 
@@ -47,55 +46,6 @@ rows_block() {
   echo "$mark <<<"
 }
 
-font_file="$root/assets/fonts/HerdrAgentIconsMax-Regular.ttf"
-font_name="Herdr Agent Icons Max"
-ghostty_cfg() {
-  for c in "$HOME/.config/ghostty/config" "$HOME/.config/ghostty/config.ghostty" \
-           "$HOME/Library/Application Support/com.mitchellh.ghostty/config" \
-           "$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"; do
-    [ -f "$c" ] && { echo "$c"; return; }
-  done
-}
-kitty_cfg="$HOME/.config/kitty/kitty.conf"
-
-# Claude icon (U+E1A0) lives in a bundled icon font the terminal has to map.
-install_font() {
-  case "$(uname)" in
-    Darwin) fonts="$HOME/Library/Fonts" ;;
-    *) fonts="$HOME/.local/share/fonts" ;;
-  esac
-  mkdir -p "$fonts" && cp "$font_file" "$fonts/"
-  command -v fc-cache >/dev/null && fc-cache -f "$fonts" >/dev/null 2>&1
-  echo "font: installed to $fonts"
-
-  g=$(ghostty_cfg)
-  if [ -n "$g" ]; then
-    if grep -qF "$mark font" "$g"; then echo "font: ghostty already mapped"; else
-      printf '\n%s font\nfont-codepoint-map = U+E1A0="%s"\n' "$mark" "$font_name" >> "$g"
-      echo "font: mapped in $g (reload Ghostty config: cmd+shift+,)"
-    fi
-  fi
-  if [ -f "$kitty_cfg" ]; then
-    if grep -qF "$mark font" "$kitty_cfg"; then echo "font: kitty already mapped"; else
-      printf '\n%s font\nsymbol_map U+E1A0 %s\n' "$mark" "$font_name" >> "$kitty_cfg"
-      echo "font: mapped in $kitty_cfg (reload kitty: ctrl+shift+f5)"
-    fi
-  fi
-  [ -n "$g" ] || [ -f "$kitty_cfg" ] ||
-    echo "font: map U+E1A0 to \"$font_name\" in your terminal's font fallback, or the icon shows as a box"
-}
-
-# Drop the marker line and the setting right after it.
-unmap_font() {
-  for c in "$(ghostty_cfg)" "$kitty_cfg"; do
-    [ -f "$c" ] && grep -qF "$mark font" "$c" || continue
-    tmp=$(mktemp)
-    awk -v m="$mark font" '$0 == m { skip = 2 } skip { skip--; next } { print }' "$c" > "$tmp"
-    cat "$tmp" > "$c" && rm -f "$tmp"
-    echo "font: unmapped in $c"
-  done
-}
-
 strip_rows() {
   tmp=$(mktemp)
   awk -v m="$mark" '$0 == m " >>>" { skip = 1 } !skip { print } $0 == m " <<<" { skip = 0 }' "$herdr_cfg" > "$tmp"
@@ -104,7 +54,6 @@ strip_rows() {
 
 install() {
   link
-  install_font
 
   touch "$herdr_cfg"
   if grep -q "^$mark >>>" "$herdr_cfg"; then
@@ -140,7 +89,6 @@ install() {
 }
 
 remove() {
-  unmap_font
   if [ -f "$herdr_cfg" ]; then
     strip_rows
     herdr server reload-config >/dev/null 2>&1 || true
