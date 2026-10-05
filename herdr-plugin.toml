@@ -1,0 +1,26 @@
+# Herdr Claude Usage plugin manifest.
+
+id = "claude-usage"
+name = "Claude Usage"
+version = "0.1.0"
+min_herdr_version = "0.9.0"
+description = "Minimal context / 5h / 7d usage bars for Claude agents in the sidebar"
+platforms = ["linux", "macos"]
+
+# Exposes report.sh at a stable path the Claude statusline calls.
+[[startup]]
+command = ["sh", "./setup.sh", "link"]
+
+[[actions]]
+id = "setup"
+title = "Claude Usage: setup"
+description = "Add the usage rows to the sidebar and hook into the Claude statusline"
+contexts = ["global"]
+command = ["sh", "./setup.sh", "install"]
+
+[[actions]]
+id = "remove"
+title = "Claude Usage: remove"
+description = "Remove the usage rows and the statusline hook"
+contexts = ["global"]
+command = ["sh", "./setup.sh", "remove"]
