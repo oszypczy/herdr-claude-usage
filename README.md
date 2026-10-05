@@ -3,7 +3,7 @@
 Minimal Claude usage bars for the [herdr](https://herdr.dev) agents sidebar: context window, 5-hour limit and 7-day limit, each with its reset countdown. Only the focused Claude agent shows them, so a long agent list stays compact.
 
 ```
- VSCode · 1 · Herdr Claude…
+ VSCode · Herdr Claude usage…
 ctx ━───── 10%
 5h  ━━──── 38% 2h50m
 7d  ────── 1% 4d16h
