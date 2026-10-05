@@ -9,6 +9,16 @@ root=$(cd "$(dirname "$0")" && pwd)
 state="${HERDR_PLUGIN_CONFIG_DIR:-$HOME/.config/herdr/plugins/config/claude-usage}/state"
 plugins_json="$(dirname "${HERDR_SOCKET_PATH:-$HOME/.config/herdr/herdr.sock}")/plugins.json"
 
+# One sync at a time: focus events and statusline updates arrive in bursts, and an
+# older run finishing last would draw the bars on a pane that lost focus.
+mkdir -p "$state"
+lock="$state/sync.lock" i=0
+until mkdir "$lock" 2>/dev/null; do
+  i=$((i + 1)); [ "$i" -gt 30 ] && { rmdir "$lock" 2>/dev/null; continue; }   # stale lock
+  sleep 0.1
+done
+trap 'rmdir "$lock" 2>/dev/null' EXIT
+
 list=$("$herdr" pane list 2>/dev/null) || exit 0
 
 # Head token: Claude icon + invisible state tag + workspace name, one token so herdr

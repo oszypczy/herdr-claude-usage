@@ -48,9 +48,17 @@ The statusline hook is guarded, so a leftover line is a no-op once the plugin is
 
 ## Customizing
 
-- Thresholds: `line()` in `report.sh` (50 / 80).
-- Bar width: `bar()` in `report.sh` (6 cells).
+- Thresholds: `line()` in `lib.sh` (50 / 80).
+- Bar width: `bar()` in `lib.sh` (6 cells).
 - Colors and layout: the `claude-usage` block in herdr's `config.toml`. Tokens are `$cu_{ctx,5h,7d}_{ok,warn,hot}`; only the token for the current level is set.
+
+## Tests
+
+```sh
+sh tests/run.sh
+```
+
+Runs the scripts against a fake `herdr` (no real session is touched) and checks that only Claude panes are drawn on, that Codex and shell panes are never touched, and the locale, API-key, expired-window and disabled cases.
 
 ## License
 

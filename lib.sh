@@ -28,8 +28,12 @@ left() {
 line() {
   name=$1 label=$2 pct=$3 reset=$4
   lvl=none
+  # Window already reset: usage is back to 0 until the next statusline update.
+  if [ -n "$reset" ] && [ "$reset" != "-" ] && [ "$reset" -le "$(date +%s)" ]; then
+    pct=0 reset=-
+  fi
   if [ "$pct" != "-" ]; then
-    p=$(printf '%.0f' "$pct")
+    p=$pct
     if [ "$p" -ge 80 ]; then lvl=hot; elif [ "$p" -ge 50 ]; then lvl=warn; else lvl=ok; fi
   fi
   for l in ok warn hot; do [ "$l" = "$lvl" ] || args="$args --clear-token cu_${name}_$l"; done

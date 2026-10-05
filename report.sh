@@ -8,13 +8,15 @@
 state="$(dirname "$0")/state"
 mkdir -p "$state"
 
-set -- $(jq -r '[
-  (.context_window.used_percentage // "-"),
-  (.rate_limits.five_hour.used_percentage // "-"),
-  (.rate_limits.five_hour.resets_at // "-"),
-  (.rate_limits.seven_day.used_percentage // "-"),
-  (.rate_limits.seven_day.resets_at // "-")
-] | map(tostring) | join(" ")')
+# Percentages are rounded here: shell printf %.0f breaks on "12.5" under a comma-decimal locale.
+set -- $(jq -r 'def pct: if . == null then "-" else round | tostring end;
+  def ts: if . == null then "-" else floor | tostring end; [
+  (.context_window.used_percentage | pct),
+  (.rate_limits.five_hour.used_percentage | pct),
+  (.rate_limits.five_hour.resets_at | ts),
+  (.rate_limits.seven_day.used_percentage | pct),
+  (.rate_limits.seven_day.resets_at | ts)
+] | join(" ")' 2>/dev/null)
 [ $# -eq 5 ] || exit 0
 
 f=$(printf '%s' "$HERDR_PANE_ID" | tr ':/' '__')
