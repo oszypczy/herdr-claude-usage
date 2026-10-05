@@ -1,6 +1,6 @@
 # herdr-claude-usage
 
-Minimal Claude usage bars for the [herdr](https://herdr.dev) agents sidebar: context window, 5-hour limit and 7-day limit, each with its reset countdown.
+Minimal Claude usage bars for the [herdr](https://herdr.dev) agents sidebar: context window, 5-hour limit and 7-day limit, each with its reset countdown. Only the focused Claude agent shows them, so a long agent list stays compact.
 
 ```
 ○ VSCode · 1 · Herdr Claude…
@@ -13,9 +13,9 @@ Bars go yellow at 50% and red at 80%.
 
 ## How it works
 
-There is no daemon and no polling. Claude Code already pipes context and rate-limit data to its statusline command as JSON. A one-line hook in your statusline script hands that JSON to `report.sh`, which pushes three pane tokens to herdr (`herdr pane report-metadata`). The sidebar renders them through `rows_by_agent.claude`.
+There is no daemon and no polling. Claude Code already pipes context and rate-limit data to its statusline command as JSON. A one-line hook in your statusline script hands that JSON to `report.sh`, which caches the numbers. `sync.sh` then pushes three pane tokens (`herdr pane report-metadata`) to the focused Claude agent and clears them from every other pane. The sidebar renders them through `rows_by_agent.claude`.
 
-Values refresh whenever the Claude session's statusline does, i.e. on activity in that session.
+`sync.sh` runs after every statusline update and on herdr's `pane.focused`, `tab.focused` and `workspace.focused` events, so the bars follow your focus. The 5h/7d limits are account-wide, so the latest values from any session are shown. Values refresh on activity in a session or when you switch to it.
 
 ## Requirements
 

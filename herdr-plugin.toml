@@ -2,14 +2,14 @@
 
 id = "claude-usage"
 name = "Claude Usage"
-version = "0.1.0"
+version = "0.2.0"
 min_herdr_version = "0.9.0"
 description = "Minimal context / 5h / 7d usage bars for Claude agents in the sidebar"
 platforms = ["linux", "macos"]
 
-# Exposes report.sh at a stable path the Claude statusline calls.
+# Exposes report.sh at a stable path for the Claude statusline, then draws once.
 [[startup]]
-command = ["sh", "./setup.sh", "link"]
+command = ["sh", "-c", "sh ./setup.sh link && exec sh ./sync.sh"]
 
 [[actions]]
 id = "setup"
@@ -24,3 +24,19 @@ title = "Claude Usage: remove"
 description = "Remove the usage rows and the statusline hook"
 contexts = ["global"]
 command = ["sh", "./setup.sh", "remove"]
+
+# Move the bars to whichever Claude agent gets focus.
+[[events]]
+id = "pane-focused"
+on = "pane.focused"
+command = ["sh", "./sync.sh"]
+
+[[events]]
+id = "tab-focused"
+on = "tab.focused"
+command = ["sh", "./sync.sh"]
+
+[[events]]
+id = "workspace-focused"
+on = "workspace.focused"
+command = ["sh", "./sync.sh"]
