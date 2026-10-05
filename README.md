@@ -43,7 +43,7 @@ If either step can't be done automatically (for example, you already have your o
 ## Disable / uninstall
 
 - `herdr plugin disable claude-usage` hides the bars. They come back with `enable`.
-- `herdr plugin action invoke remove --plugin claude-usage` removes the config block and the statusline line. Run it before `herdr plugin uninstall claude-usage`.
+- `herdr plugin action invoke remove --plugin claude-usage` removes the config block, the statusline line and the terminal font map (the font file stays installed). Run it before `herdr plugin uninstall claude-usage`.
 
 The statusline hook is guarded, so a leftover line is a no-op once the plugin is gone.
 
